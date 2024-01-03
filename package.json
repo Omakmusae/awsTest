@@ -4,12 +4,16 @@
   "description": "aws 리소스 관련 코드 모음",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node index",
+    "build": "tsc && node index"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^20.10.6",
     "aws-sdk": "^2.1528.0",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }
