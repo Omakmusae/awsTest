@@ -1,44 +1,62 @@
-import S3 from 'aws-sdk/clients/s3' //필요한 S3 모듈만 불러오는 aws sdk 사용 방법 - 추천
-import AWS from 'aws-sdk';
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import dotenv from 'dotenv'
-import { fileURLToPath } from "url";
+// Import required AWS SDK clients and commands for Node.js.
+import { PutObjectCommand, CreateBucketCommand,GetObjectCommand} from "@aws-sdk/client-s3";
+import { s3Client } from "./s3Client.js";
 
-dotenv.config()
+// Set the parameters
+const params = {
+  Bucket: "testtest240105test", // The name of the bucket. For example, 'sample-bucket-101'.
+  Key: "sample_upload.txt", // The name of the object. For example, 'sample_upload.txt'.
+  Body: "Hello world", // The content of the object. For example, 'Hello world!".
+};
 
-// AWS.config.update({
-//     accessKeyId: process.env.S3_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
-//     region: 'ap-northeast-2',
-//  });
-
-const s3 = new AWS.S3();
-s3.listBuckets().promise().then((data) => {
-  console.log('S3 : ', JSON.stringify(data, null, 2));
-});
-
-
-
-
-const client = new S3Client({});
-
-export const main = async () => {
-  const command = new GetObjectCommand({
-    Bucket: "cd-cals-meta",
-    Key: "0b6b595329fe11eea0890af218b879ee/",
-  });
-
+const run = async () => {
+  // Create an Amazon S3 bucket.
   try {
-    const response = await client.send(command);
-    // The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
-    const str = await response.Body.transformToString();
-    console.log(str);
+    const data = await s3Client.send(
+        new CreateBucketCommand({ Bucket: params.Bucket })
+    );
+    console.log(data);
+    console.log("Successfully created a bucket called ", data.Location);
+    return data; // For unit tests.
   } catch (err) {
-    console.error(err);
+    console.log("Error", err);
+  }
+  // Create an object and upload it to the Amazon S3 bucket.
+  try {
+    const results = await s3Client.send(new PutObjectCommand(params));
+    console.log(
+        "Successfully created " +
+        params.Key +
+        " and uploaded it to " +
+        params.Bucket +
+        "/" +
+        params.Key
+    );
+    return results; // For unit tests.
+  } catch (err) {
+    console.log("Error", err);
   }
 };
 
+// run()
+//   .then((result) => {
+//     // Handle the result if needed
+//     console.log("Execution completed:", result);
+//   })
+//   .catch((error) => {
+//     // Handle any errors that occurred during execution
+//     console.error("Error during execution:", error);
+//   });
 
-// const calc = (a:number, b:number):number => a+b;
 
-// console.log(calc(1,2));
+const { Body } = await s3Client.send(
+    new GetObjectCommand({
+      Bucket: 'testtest240105test',
+      Key: "sample_upload.txt",
+    })
+);
+
+
+//onsole.log(await Body.transformToString());
+
+console.log( "metadata " , Body)
