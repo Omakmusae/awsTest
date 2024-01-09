@@ -1,9 +1,6 @@
-import { PutObjectCommand, CreateBucketCommand,GetObjectCommand, S3Client, GetObjectTaggingCommand, ListObjectsCommand, CopyObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
-
+import { PutObjectCommand, CreateBucketCommand, GetObjectCommand, S3Client, GetObjectTaggingCommand, ListObjectsCommand, CopyObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({});
-
-
 
 const params = {
     Bucket: "testtest240105test", // The name of the bucket. For example, 'sample-bucket-101'.
@@ -12,10 +9,6 @@ const params = {
     Body: "Hello world", // The content of the object. For example, 'Hello world!".
 };
 
-
-
-
-
 const createParams = {
     Bucket: "testtest240105test", // The name of the bucket. For example, 'sample-bucket-101'.
     //Key: "testContainer/sample_upload.txt", // The name of the object. For example, 'sample_upload.txt'.
@@ -23,7 +16,6 @@ const createParams = {
     Body: "Hello world", // The content of the object. For example, 'Hello world!".
     Tagging: "Version=A222",
 };
-
 
 const createObj = async (params) => {
     try {
@@ -42,12 +34,7 @@ const createObj = async (params) => {
     }
 }
 
-
-
-
 //createObj(createParams);
-
-
 
 const getObject = async (params) => {
     try {
@@ -62,7 +49,6 @@ const getObject = async (params) => {
         console.log("Object 조회 Error 발생", err);
     }
 }
-
 
 const getObjectTag = async (params) => {
     try {
@@ -89,24 +75,24 @@ const objResult = await getObject(params)
 console.log(await objResult.Body.transformToString())//Hello world
 console.log(await getObjectTag(params))
 
-
-
+const a = await getObjectTag(params);
+console.log(a.TagSet)
 
 
 const getObjList = async (params) => {
     try {
-      const listResult = await s3Client.send(new ListObjectsCommand({
+        const listResult = await s3Client.send(new ListObjectsCommand({
         Bucket: "testtest240105test",
         Prefix: "latest/",
         MaxKeys: 5,
-      }));  
-      console.log("Your bucket contains the following objects:\n");
-      console.log(listResult.Contents)
+        }));  
+        console.log("Your bucket contains the following objects:\n");
+        console.log(listResult.Contents)
 
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
-  };
+};
 
 //getObjList(params);
 
@@ -114,17 +100,15 @@ const copyObj = async ()=> {
     try {
         const listResult = await s3Client.send(new CopyObjectCommand({
             Bucket: "testtest240105test",
-            CopySource : "latest/sample_upload222.txt",
-            Key: "sample_upload222.txt",
+            CopySource : "testtest240105test/A111/sample_upload2.txt",
+            Key: "sample_upload2.txt",
           }));          
-        
     } catch (error) {
-        console.error(error);
+        console.error('객체 복사 에러',error);
     }
 }
 
-//copyObj()
-
+copyObj()
 
 const deleteObj = async () => {
     try {
