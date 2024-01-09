@@ -1,5 +1,5 @@
 // Import required AWS SDK clients and commands for Node.js.
-import { PutObjectCommand, CreateBucketCommand,GetObjectCommand} from "@aws-sdk/client-s3";
+import { PutObjectCommand, CreateBucketCommand,GetObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import { s3Client } from "./s3Client.js";
 
 // Set the parameters
@@ -8,6 +8,8 @@ const params = {
   Key: "sample_upload.txt", // The name of the object. For example, 'sample_upload.txt'.
   Body: "Hello world", // The content of the object. For example, 'Hello world!".
 };
+
+const s3Client = new S3Client({region:'us-east-1'})
 
 const run = async () => {
   // Create an Amazon S3 bucket.
@@ -49,14 +51,29 @@ const run = async () => {
 //   });
 
 
-const { Body } = await s3Client.send(
+
+const data = await s3Client.send(
     new GetObjectCommand({
       Bucket: 'testtest240105test',
-      Key: "sample_upload.txt",
+      Key: 'sample_upload.txt',
     })
 );
 
+const result = await data.Body.transformToString();
 
-//onsole.log(await Body.transformToString());
+console.log(result)
 
-console.log( "metadata " , Body)
+// const { Body } = await s3Client.send(
+//     new GetObjectCommand({
+//       Bucket: 'cd-cals-meta',
+//       Key: '1fc364acdb7711eab9cc0ab4a295bf36/demo/api/A10663/meta.txt',
+//     })
+// );
+
+//console.log(await Body.transformToString());
+
+
+
+//console.log( "metadata " , Body)
+
+
