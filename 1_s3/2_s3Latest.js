@@ -1,4 +1,4 @@
-import { PutObjectCommand, CreateBucketCommand, GetObjectCommand, S3Client, GetObjectTaggingCommand, ListObjectsCommand, CopyObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
+import { PutObjectCommand, CreateBucketCommand, GetObjectCommand, S3Client, GetObjectTaggingCommand, ListObjectsCommand, ListObjectsV2Command, CopyObjectCommand, DeleteObjectCommand} from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({});
 
@@ -34,6 +34,24 @@ const createObj = async (params) => {
     }
 }
 
+const createFolder = async () => {
+    try {
+        const result = await s3Client.send(new PutObjectCommand({Bucket: "testtest240105test", Key: "folderMakingTest/",}));
+        console.log(
+            "Successfully created " +
+            params.Key +
+            " and uploaded it to " +
+            params.Bucket +
+            "/" +
+            params.Key
+        );
+        return result; // For unit tests.
+    } catch (error) {
+        console.log("버킷 생성 Error 발생", error);
+    }
+}
+
+//createFolder()
 //createObj(createParams);
 
 const getObject = async (params) => {
@@ -72,11 +90,11 @@ const objResult = await getObject(params)
                                         console.log("Object 조회 Error 발생" ,error)
                                     })
 
-console.log(await objResult.Body.transformToString())//Hello world
-console.log(await getObjectTag(params))
+// console.log(await objResult.Body.transformToString())//Hello world
+// console.log(await getObjectTag(params))
 
-const a = await getObjectTag(params);
-console.log(a.TagSet)
+// const a = await getObjectTag(params);
+// console.log(a.TagSet)
 
 
 const getObjList = async (params) => {
@@ -108,7 +126,7 @@ const copyObj = async ()=> {
     }
 }
 
-copyObj()
+//copyObj()
 
 const deleteObj = async () => {
     try {
@@ -123,3 +141,21 @@ const deleteObj = async () => {
 }
 
 //deleteObj();
+
+
+
+const testGetObjList = async (params) => {
+    try {
+        const listResult = await s3Client.send(new ListObjectsCommand({
+        Bucket: "testtest240105test",
+        Prefix: "wetwetwet/",
+        MaxKeys: 5,
+        }));  
+        console.log("Your bucket contains the following objects:\n");
+        console.log(listResult.Contents)
+
+    } catch (err) {
+        console.error(err);
+    }
+};
+testGetObjList();
